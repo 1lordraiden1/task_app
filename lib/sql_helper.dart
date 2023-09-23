@@ -17,6 +17,7 @@ class SQLHelper {
       'task.db',
       version: 1,
       onCreate: (sql.Database DB, int version) async {
+        print("creating tables ...");
         await createTables(DB);
       },
     );

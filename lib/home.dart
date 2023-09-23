@@ -25,10 +25,26 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _refreshJournals();
-    print("we have ${_journals} task");
+    print("we have ${_journals.length} task");
   }
 
-  void _showForm(int id) {}
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _desController = TextEditingController();
+  void _showForm(int id) {
+    if (id != null) {
+      final existingJournal = _journals.firstWhere(
+        (element) => element['id'] == id,
+      );
+      _titleController.text = existingJournal['title'];
+      _desController.text = existingJournal['description'];
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Container(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
