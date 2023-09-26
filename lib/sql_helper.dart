@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
@@ -13,8 +14,11 @@ class SQLHelper {
   }
 
   static Future<sql.Database> db() async {
+    var databasesPath = await sql.getDatabasesPath();
+    
+    String path = (databasesPath.toString() + 'task.db');
     return sql.openDatabase(
-      'task.db',
+      path,
       version: 1,
       onCreate: (sql.Database DB, int version) async {
         print("creating tables ...");
