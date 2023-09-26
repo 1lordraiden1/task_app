@@ -22,6 +22,22 @@ class _HomePageState extends State<HomePage> {
     print("we have ${_journals.length} task");
   }
 
+  Future<void> _deleteItem(int id) async {
+    await SQLHelper.deleteItem(id);
+    _refreshJournals();
+
+    print("Item $id deleted successfully");
+
+    print("we have ${_journals.length} task");
+  }
+
+  Future<void> _updateItem(int id) async {
+    await SQLHelper.updateItem(id, _titleController.text, _desController.text);
+    _refreshJournals();
+
+    print("Item $id updated successfully");
+  }
+
   void _refreshJournals() async {
     final data = await SQLHelper.getItems();
     setState(() {
@@ -103,8 +119,8 @@ class _HomePageState extends State<HomePage> {
                 if (id == null) {
                   await _addItem();
                 }
-                if (id == null) {
-                  // await _updateItem();
+                if (id != null) {
+                  await _updateItem(id);
                 }
 
                 _titleController.text = '';
@@ -128,6 +144,41 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tasks"),
+      ),
+      body: ListView.builder(
+        itemBuilder: (context, index) => Card(
+          color: Colors.blue[800],
+          margin: EdgeInsets.all(15),
+          child: ListTile(
+            title: Text(
+              _journals[index]['title'],
+              style: TextStyle(color: Colors.white),
+            ),
+            subtitle: Text(
+              _journals[index]['description'],
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            trailing: SizedBox(
+              width: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () => _showForm(_journals[index]['id']),
+                    icon: Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: () => _deleteItem(_journals[index]['id']),
+                    icon: Icon(Icons.delete),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        itemCount: _journals.length,
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
